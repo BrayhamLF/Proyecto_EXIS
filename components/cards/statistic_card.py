@@ -1,5 +1,8 @@
 """
-Tarjeta para mostrar indicadores del sistema.
+statistic_card.py
+-----------------
+
+Tarjeta de indicador del Dashboard.
 """
 
 from __future__ import annotations
@@ -20,87 +23,187 @@ class StatisticCard(BaseCard):
         title,
         value="0",
         icon=None,
-        accent_color=None
+        color=Colors.PRIMARY,
+        trend=None
     ):
 
         super().__init__(
             master,
-            width=240,
-            height=150
+            height=145
         )
 
-        accent_color = accent_color or Colors.PRIMARY
+        self.color = color
+
+        self.title = title
+        self.value = value
+        self.icon = icon
+        self.trend = trend
+
+        self._build()
+
+    # ==================================================
+
+    def _build(self):
 
         self.content.grid_columnconfigure(0, weight=1)
-        self.content.grid_columnconfigure(1, weight=1)
 
-        # Barra superior
+        # -----------------------------
+        # Cabecera
+        # -----------------------------
 
-        self.value = ctk.CTkLabel(
+        header = ctk.CTkFrame(
             self.content,
-            text=value,
-            width=80,
-            anchor="e",
-            font=Fonts.H1,
-            text_color=accent_color
-        ).grid(
+            fg_color="transparent"
+        )
+
+        header.grid(
             row=0,
             column=0,
-            columnspan=2,
             sticky="ew",
-            padx=12,
-            pady=(12,18)
+            padx=18,
+            pady=(16,8)
         )
 
-        # Icono
+        # círculo
 
-        self.icon = ctk.CTkLabel(
-            self.content,
-            image=icon,
+        circle = ctk.CTkFrame(
+
+            header,
+
+            width=46,
+
+            height=46,
+
+            fg_color=self.color,
+
+            corner_radius=23
+
+        )
+
+        circle.pack(
+            side="left"
+        )
+
+        circle.pack_propagate(False)
+
+        lbl_icon = ctk.CTkLabel(
+
+            circle,
+
+            image=self.icon,
+
             text=""
+
         )
 
-        self.icon.grid(
-            row=1,
-            column=0,
-            sticky="w",
-            padx=(20,0)
+        lbl_icon.pack(
+            expand=True
         )
 
+        # tendencia
+
+        self.trend_label = ctk.CTkLabel(
+
+            header,
+
+            text=self.trend or "",
+
+            font=Fonts.SMALL_BOLD,
+
+            text_color=Colors.SUCCESS
+
+        )
+
+        self.trend_label.pack(
+            side="right"
+        )
+
+        # -----------------------------
         # Valor
+        # -----------------------------
 
-        self.value = ctk.CTkLabel(
+        self.value_label = ctk.CTkLabel(
+
             self.content,
-            text=value,
+
+            text=self.value,
+
             font=Fonts.H1,
-            text_color=accent_color
-        )
 
-        self.value.grid(
-            row=1,
-            column=1,
-            sticky="e",
-            padx=(0,20)
-        )
-
-        # Título
-
-        self.title = ctk.CTkLabel(
-            self.content,
-            text=title,
-            font=Fonts.BODY_BOLD,
             text_color=Colors.TEXT
+
         )
 
-        self.title.grid(
-            row=2,
+        self.value_label.grid(
+
+            row=1,
+
             column=0,
-            columnspan=2,
+
             sticky="w",
-            padx=20,
-            pady=(18,15)
+
+            padx=18,
+
+            pady=(8,2)
+
         )
+
+        # -----------------------------
+        # Texto
+        # -----------------------------
+
+        self.title_label = ctk.CTkLabel(
+
+            self.content,
+
+            text=self.title,
+
+            font=Fonts.BODY,
+
+            text_color=Colors.TEXT_SECONDARY
+
+        )
+
+        self.title_label.grid(
+
+            row=2,
+
+            column=0,
+
+            sticky="w",
+
+            padx=18,
+
+            pady=(0,16)
+
+        )
+
+    # ==================================================
+    # API
+    # ==================================================
 
     def set_value(self, value):
 
-        self.value.configure(text=str(value))
+        self.value_label.configure(
+            text=value
+        )
+
+    def set_title(self, title):
+
+        self.title_label.configure(
+            text=title
+        )
+
+    def set_trend(
+        self,
+        value,
+        color=Colors.SUCCESS
+    ):
+
+        self.trend_label.configure(
+
+            text=value,
+
+            text_color=color
+
+        )

@@ -21,3 +21,8 @@ class Radius:
     XL = 24
 
     ROUND = 999
+
+    # Alias explícitos para componentes que describen el radio por tamaño.
+    SMALL = SM
+    MEDIUM = MD
+    LARGE = LG

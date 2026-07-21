@@ -27,6 +27,9 @@ class Colors:
 
     SECONDARY_LIGHT = "#C8BA84"
 
+    # Accent / secondary alias
+    ACCENT = SECONDARY
+
     GOLD = "#D4AF37"
 
     # ==================================================
@@ -46,6 +49,9 @@ class Colors:
 
     BLACK = "#000000"
 
+    # Alias tarjeta (compatibilidad)
+    CARD = SURFACE
+
     # ==================================================
     # Bordes
     # ==================================================
@@ -55,6 +61,14 @@ class Colors:
     BORDER_FOCUS = PRIMARY
 
     BORDER_LIGHT = "#E6ECE9"
+
+    # ==================================================
+    # Sidebar
+    # ==================================================
+
+    SIDEBAR = PRIMARY
+
+    SIDEBAR_HOVER = PRIMARY_HOVER
 
     # ==================================================
     # Texto
@@ -89,3 +103,30 @@ class Colors:
     OVERLAY = "#00000022"
 
     TRANSPARENT = "transparent"
+    
+    # ==================================================
+    # Dashboard
+    # ==================================================
+
+    CARD_NORMAL = SURFACE
+
+    CARD_HOVER = "#F7FAFC"
+
+    CARD_BORDER = BORDER
+
+    CARD_BORDER_ACTIVE = PRIMARY
+   
+    CARD_SHADOW = "#EEF2F7"
+
+    SUCCESS_BG = "#EAF8EF"
+
+    WARNING_BG = "#FFF8E5"
+
+    ERROR_BG = "#FDECEC"
+
+    PRIMARY_BG = "#EEF5FF"
+
+    # Compatibility aliases (light variants used across components)
+    SUCCESS_LIGHT = SUCCESS_BG
+    WARNING_LIGHT = WARNING_BG
+    ERROR_LIGHT = ERROR_BG

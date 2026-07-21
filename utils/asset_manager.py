@@ -5,12 +5,12 @@ asset_manager.py
 Administrador centralizado de recursos.
 """
 
-from pathlib import Path
+from config.settings import Settings
 
 
 class AssetManager:
 
-    ROOT = Path("assets")
+    ROOT = Settings.ASSETS_PATH
 
     ICONS = ROOT / "icons"
 

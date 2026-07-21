@@ -1,41 +1,37 @@
-"""
-Sesión del usuario.
-"""
+"""Modelo de la sesión activa de la aplicación."""
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 
+
+@dataclass(slots=True)
 class Session:
+    """Información mínima del usuario autenticado."""
 
-    def __init__(self):
-
-        self.id = None
-
-        self.name = ""
-
-        self.lastname = ""
-
-        self.email = ""
-
-        self.role = ""
-
-        self.photo = None
+    id: int | None = None
+    name: str = ""
+    lastname: str = ""
+    email: str = ""
+    role: str = ""
+    photo: str | None = None
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
+        return " ".join(part for part in (self.name, self.lastname) if part)
 
-        return f"{self.name} {self.lastname}"
+    @property
+    def is_authenticated(self) -> bool:
+        return bool(self.email and self.role)
 
-    def logout(self):
-
+    def clear(self) -> None:
         self.id = None
-
         self.name = ""
-
         self.lastname = ""
-
         self.email = ""
-
         self.role = ""
-
         self.photo = None
+
+    def logout(self) -> None:
+        """Alias semántico para conservar la API existente."""
+        self.clear()

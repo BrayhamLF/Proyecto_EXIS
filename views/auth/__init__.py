@@ -1,1 +1,1 @@
-
+"""Vistas relacionadas con autenticación."""

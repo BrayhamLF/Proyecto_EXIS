@@ -1,0 +1,1 @@
+"""Paneles visuales reutilizables."""

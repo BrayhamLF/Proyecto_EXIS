@@ -8,6 +8,7 @@ Panel reutilizable.
 from __future__ import annotations
 
 from components.core.base_component import BaseComponent
+from config.theme.theme_manager import ThemeManager
 
 
 class BasePanel(BaseComponent):
@@ -18,11 +19,7 @@ class BasePanel(BaseComponent):
         **kwargs
     ):
 
-        super().__init__(
-            master,
-            fg_color=self.theme.SURFACE,
-            **kwargs
-        )
+        super().__init__(master, fg_color=ThemeManager.current().SURFACE, **kwargs)
 
     def configure_grid(self):
 

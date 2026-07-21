@@ -1,163 +1,59 @@
-"""
-application.py
---------------
-
-Ventana principal de la aplicación.
-
-Responsabilidades:
-- Configurar la ventana principal.
-- Administrar la navegación entre páginas.
-- Servir como punto de entrada de la interfaz.
-"""
+"""Ventana principal y punto de composición de la aplicación."""
 
 from __future__ import annotations
 
 import customtkinter as ctk
 
+from app.router import Router
+from app.routes import MAIN_ROUTES
+from app.session import Session
 from config.colors import Colors
 from config.settings import Settings
-
+from services.auth_service import AuthService
 from views.auth.login_page import LoginPage
+from views.layout.main_layout import MainLayout
 
 
 class Application(ctk.CTk):
+    """Ensambla dependencias y coordina el flujo público/autenticado."""
 
-    def __init__(self):
-
+    def __init__(self, auth_service: AuthService | None = None):
         super().__init__()
 
-        self.current_page = None
+        self.title(Settings.APP_NAME)
+        self.geometry(f"{Settings.WINDOW_WIDTH}x{Settings.WINDOW_HEIGHT}")
+        self.minsize(Settings.MIN_WIDTH, Settings.MIN_HEIGHT)
+        self.configure(fg_color=Colors.BACKGROUND)
 
-        self._configure_window()
-
-        self._center_window()
+        self.router = Router(self)
+        self.session = Session()
+        self.auth_service = auth_service or AuthService()
 
         self.show_login()
 
-    # =====================================================
-    # CONFIGURACIÓN
-    # =====================================================
+    @property
+    def current_view(self):
+        """Vista raíz actual; se conserva para compatibilidad."""
+        return self.router.current
 
-    def _configure_window(self):
+    def clear_view(self) -> None:
+        self.router.clear()
 
-        self.title(Settings.APP_NAME)
+    def show_login(self) -> None:
+        self.router.navigate(LoginPage(self, login_callback=self.login))
 
-        self.geometry(
-            f"{Settings.WINDOW_WIDTH}x{Settings.WINDOW_HEIGHT}"
-        )
+    def login(self, email: str, password: str, role: str) -> None:
+        self.session = self.auth_service.authenticate(email, password, role)
+        self.show_main_layout()
 
-        self.minsize(
-            Settings.MIN_WIDTH,
-            Settings.MIN_HEIGHT
-        )
+    def show_main_layout(self) -> None:
+        layout = MainLayout(self, logout_callback=self.logout)
+        self.router.navigate(layout)
+        layout.set_user(self.session.full_name, self.session.role)
+        layout.register_pages(MAIN_ROUTES)
+        layout.show_default_page()
 
-        self.configure(
-            fg_color=Colors.BACKGROUND
-        )
-
-        self.grid_rowconfigure(
-            0,
-            weight=1
-        )
-
-        self.grid_columnconfigure(
-            0,
-            weight=1
-        )
-
-    # =====================================================
-    # CENTRAR VENTANA
-    # =====================================================
-
-    def _center_window(self):
-
-        self.update_idletasks()
-
-        width = Settings.WINDOW_WIDTH
-        height = Settings.WINDOW_HEIGHT
-
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-
-        x = (screen_width - width) // 2
-        y = (screen_height - height) // 2
-
-        self.geometry(
-            f"{width}x{height}+{x}+{y}"
-        )
-
-    # =====================================================
-    # LOGIN
-    # =====================================================
-
-    def show_login(self):
-
-        self.clear_page()
-
-        self.current_page = LoginPage(
-            self,
-            login_callback=self.login
-        )
-
-        self.current_page.grid(
-            row=0,
-            column=0,
-            sticky="nsew"
-        )
-
-    # =====================================================
-    # AUTENTICACIÓN
-    # =====================================================
-
-    def login(
-        self,
-        email,
-        password,
-        role
-    ):
-        """
-        Temporalmente solo imprime los datos.
-
-        En el Sprint 3 se conectará con
-        el AuthenticationController.
-        """
-
-        print("===== LOGIN =====")
-        print("Correo:", email)
-        print("Rol:", role)
-
-        # TODO:
-        # self.show_main_layout()
-
-    # =====================================================
-    # NAVEGACIÓN
-    # =====================================================
-
-    def clear_page(self):
-
-        if self.current_page is not None:
-
-            self.current_page.destroy()
-
-            self.current_page = None
-
-    def show_page(
-        self,
-        page_class,
-        *args,
-        **kwargs
-    ):
-
-        self.clear_page()
-
-        self.current_page = page_class(
-            self,
-            *args,
-            **kwargs
-        )
-
-        self.current_page.grid(
-            row=0,
-            column=0,
-            sticky="nsew"
-        )
+    def logout(self) -> None:
+        """Cierra la sesión y vuelve al único punto de entrada público."""
+        self.session.clear()
+        self.show_login()

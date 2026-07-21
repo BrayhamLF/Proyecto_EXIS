@@ -3,12 +3,6 @@ base_card.py
 ------------
 
 Tarjeta base reutilizable para todo el sistema.
-
-Características:
-- Sombra simulada
-- Borde configurable
-- Esquinas redondeadas
-- Contenedor interno reutilizable
 """
 
 from __future__ import annotations
@@ -16,135 +10,119 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from config.colors import Colors
+from config.sizes import Sizes
 
 
 class BaseCard(ctk.CTkFrame):
 
-    SHADOW_OFFSET = 4
-    CORNER_RADIUS = 18
-    BORDER_WIDTH = 1
-    PADDING = 24
-
     def __init__(
         self,
         master,
-        width=None,
-        height=None,
-        fg_color=None,
-        border_color=None,
-        corner_radius=None,
+        width: int | None = None,
+        height: int | None = None,
+        fg_color: str | None = None,
+        corner_radius: int | None = None,
+        border_width: int = 1,
+        border_color: str | None = None,
+        propagate: bool | None = None,
         **kwargs
     ):
 
-        super().__init__(
-            master,
-            fg_color="transparent",
-            **kwargs
-        )
+        init_kwargs = {
 
-        self.card_color = fg_color or Colors.SURFACE
-        self.border_color = border_color or "#DCE3EA"
-        self.corner_radius = corner_radius or self.CORNER_RADIUS
+            "fg_color": fg_color or Colors.SURFACE,
 
-        if width:
-            self.configure(width=width)
+            "corner_radius": corner_radius or Sizes.LARGE_RADIUS,
 
-        if height:
-            self.configure(height=height)
+            "border_width": border_width,
+
+            "border_color": border_color or Colors.BORDER,
+
+        }
+
+        if width is not None:
+            init_kwargs["width"] = width
+
+        if height is not None:
+            init_kwargs["height"] = height
+
+        init_kwargs.update(kwargs)
+
+        super().__init__(master, **init_kwargs)
+
+        # ==================================================
+        # Grid principal
+        # ==================================================
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self._create_shadow()
-        self._create_card()
-        self._create_content()
-
-    # =====================================================
-    # Sombra
-    # =====================================================
-
-    def _create_shadow(self):
-
-        self.shadow = ctk.CTkFrame(
-            self,
-            fg_color="#D9DEE5",
-            corner_radius=self.corner_radius
-        )
-
-        self.shadow.grid(
-            row=0,
-            column=0,
-            sticky="nsew",
-            padx=(self.SHADOW_OFFSET, 0),
-            pady=(self.SHADOW_OFFSET, 0)
-        )
-
-    # =====================================================
-    # Tarjeta
-    # =====================================================
-
-    def _create_card(self):
-
-        self.card = ctk.CTkFrame(
-            self,
-            fg_color=self.card_color,
-            border_width=self.BORDER_WIDTH,
-            border_color=self.border_color,
-            corner_radius=self.corner_radius
-        )
-
-        self.card.grid(
-            row=0,
-            column=0,
-            sticky="nsew"
-        )
-
-        self.card.grid_rowconfigure(0, weight=1)
-        self.card.grid_columnconfigure(0, weight=1)
-
-    # =====================================================
-    # Contenido
-    # =====================================================
-
-    def _create_content(self):
+        # ==================================================
+        # Contenedor interno
+        # ==================================================
 
         self.content = ctk.CTkFrame(
-            self.card,
+            self,
             fg_color="transparent"
         )
 
         self.content.grid(
             row=0,
             column=0,
-            sticky="nsew",
-            padx=self.PADDING,
-            pady=self.PADDING
+            sticky="nsew"
         )
 
+        self.content.grid_rowconfigure(0, weight=1)
         self.content.grid_columnconfigure(0, weight=1)
 
-    # =====================================================
+        # ==================================================
+        # Propagación inteligente
+        # ==================================================
+
+        if propagate is None:
+
+            propagate = (
+
+                width is None
+
+                and
+
+                height is None
+
+            )
+
+        self.grid_propagate(propagate)
+        self.pack_propagate(propagate)
+
+    # ==================================================
     # API
-    # =====================================================
+    # ==================================================
 
-    def get_container(self):
+    def enable_propagation(self):
 
-        return self.content
+        self.grid_propagate(True)
+        self.pack_propagate(True)
 
-    def set_border_color(self, color):
+    def disable_propagation(self):
 
-        self.card.configure(
-            border_color=color
-        )
+        self.grid_propagate(False)
+        self.pack_propagate(False)
 
-    def set_background(self, color):
+    def set_fixed_size(
+        self,
+        width=None,
+        height=None
+    ):
 
-        self.card.configure(
-            fg_color=color
-        )
+        if width is not None:
+            self.configure(width=width)
 
-    def set_shadow_color(self, color):
+        if height is not None:
+            self.configure(height=height)
 
-        self.shadow.configure(
-            fg_color=color
-        )
+        self.disable_propagation()
+
+    def clear(self):
+
+        for widget in self.content.winfo_children():
+            widget.destroy()

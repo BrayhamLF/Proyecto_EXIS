@@ -8,6 +8,9 @@ Monitorías y Tutorías Académicas.
 
 from pathlib import Path
 
+# Tamaños reutilizables
+from config.sizes import Sizes
+
 
 class Settings:
 
@@ -25,9 +28,9 @@ class Settings:
 
     LOGOS_PATH = ASSETS_PATH / "logos"
 
-    IMAGES_PATH = ASSETS_PATH / "images"
-
     ICONS_PATH = ASSETS_PATH / "icons"
+
+    IMAGES_PATH = ASSETS_PATH / "images"
 
     FONTS_PATH = ASSETS_PATH / "fonts"
 
@@ -35,15 +38,16 @@ class Settings:
     # IMÁGENES
     # ==================================================
 
-    APP_LOGO = LOGOS_PATH / "escudo-unitropico_1.png"
+    APP_LOGO = LOGOS_PATH / "escudo-unitropico_2.png"
 
-    LOGIN_BANNER = IMAGES_PATH / "login_banner.png"
+    # Compatibilidad: ruta del logo singular
+    LOGO_PATH = APP_LOGO
 
-    DEFAULT_AVATAR = IMAGES_PATH / "avatar.png"
+    DEFAULT_AVATAR = ICONS_PATH / "usuario.png"
 
-    DEFAULT_USER_ICON = ICONS_PATH / "user.png"
+    DEFAULT_USER_ICON = ICONS_PATH / "usuario.png"
 
-    DEFAULT_PASSWORD_ICON = ICONS_PATH / "password.png"
+    DEFAULT_PASSWORD_ICON = ICONS_PATH / "cerrar.png"
 
     # ==================================================
     # INFORMACIÓN DEL SISTEMA
@@ -100,3 +104,48 @@ class Settings:
     # ==================================================
 
     DEBUG = True
+    
+    # ==================================================
+    # ICONOS
+    # ==================================================
+
+    DASHBOARD_ICON = ICONS_PATH / "inicio.png"
+
+    STUDENTS_ICON = ICONS_PATH / "estudiante.png"
+
+    USERS_ICON = ICONS_PATH / "usuario.png "
+
+    TUTORS_ICON = ICONS_PATH / "tutor.png"
+
+    MONITORS_ICON = ICONS_PATH / "monitor.png"
+
+    TUTORIALS_ICON = ICONS_PATH / "tutoria.png"
+
+    SESSIONS_ICON = ICONS_PATH / "sesiones.png"
+
+    TRACKING_ICON = ICONS_PATH / "seguimiento.png"
+
+    SPACES_ICON = ICONS_PATH / "espacio.png"
+
+    REPORTS_ICON = ICONS_PATH / "reporte.png"
+
+    SETTINGS_ICON = ICONS_PATH / "configuracion.png"
+
+    LOGOUT_ICON = ICONS_PATH / "salida.png"
+
+    MENU_ICON = ICONS_PATH / "menu_1.png"
+
+    SEARCH_ICON = ICONS_PATH / "buscar.png"
+
+    NOTIFICATION_ICON = ICONS_PATH / "notificacion.png"
+
+    EYE_ICON = ICONS_PATH / "mostrar.png"
+
+    EYE_OFF_ICON = ICONS_PATH / "ocultar.png"
+    
+    ARROW_RIGHT_ICON = ICONS_PATH / "flecha-derecha.png"
+    
+    # Tamaños de iconos (ancho, alto)
+    ICON_SIZE = (Sizes.SIDEBAR_ICON, Sizes.SIDEBAR_ICON)
+
+    STATISTIC_ICON_SIZE = (Sizes.ICON_XL, Sizes.ICON_XL)

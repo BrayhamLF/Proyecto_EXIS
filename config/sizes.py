@@ -22,11 +22,19 @@ class Sizes:
     # Layout
     # ==================================================
 
-    SIDEBAR_WIDTH = 265
+    # Ajuste para mejor presentación
+    SIDEBAR_WIDTH = 220
 
     HEADER_HEIGHT = 72
 
     STATUSBAR_HEIGHT = 32
+    
+    CONTENT_PADDING = 25
+
+    # Espaciados usados por los componentes del dashboard.
+    SPACE_16 = 16
+    SPACE_20 = 20
+    SPACE_24 = 24
 
     # ==================================================
     # Botones
@@ -37,6 +45,14 @@ class Sizes:
     BUTTON_SMALL = 38
 
     BUTTON_LARGE = 56
+
+    # Small corner radius (kept for compatibility)
+    SMALL_RADIUS = 8
+
+    # Medium / Large corner radius (compatibility)
+    MEDIUM_RADIUS = 12
+
+    LARGE_RADIUS = 18
 
     # ==================================================
     # Entradas
@@ -57,8 +73,22 @@ class Sizes:
     CARD_MIN_HEIGHT = 150
 
     CARD_HEADER_HEIGHT = 55
+   
+    CARD_PADDING = 20
 
-    CARD_PADDING = 24
+    SECTION_PADDING = 24
+
+    LIST_ITEM_HEIGHT = 70
+
+    LIST_ITEM_SPACING = 8
+
+    ICON_CIRCLE = 42
+
+    BADGE_HEIGHT = 26
+
+    BADGE_RADIUS = 13
+
+    SECTION_RADIUS = 12
 
     # ==================================================
     # Sidebar
@@ -69,6 +99,8 @@ class Sizes:
     SIDEBAR_ICON = 22
 
     SIDEBAR_LOGO = 92
+    # Anchura cuando el sidebar está colapsado
+    SIDEBAR_COLLAPSED_WIDTH = 72
 
     # ==================================================
     # Header
@@ -91,3 +123,29 @@ class Sizes:
     ICON_LG = 28
 
     ICON_XL = 36
+    
+    # ==================================================
+    # Dashboard
+    # ==================================================
+
+    DASHBOARD_CARD_HEIGHT = 110
+
+    DASHBOARD_CARD_RADIUS = 16
+
+    DASHBOARD_CARD_PADDING = 18
+
+    DASHBOARD_CARD_SPACING = 16
+
+    DASHBOARD_ICON_SIZE = 22
+
+    DASHBOARD_ARROW_SIZE = 18
+    
+    DASHBOARD_MARGIN = 24
+
+    DASHBOARD_SECTION_GAP = 20
+
+    DASHBOARD_PANEL_GAP = 16
+
+    DASHBOARD_TOP_GAP = 12
+
+    DASHBOARD_SIDE_PADDING = 8

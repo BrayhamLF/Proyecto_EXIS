@@ -19,6 +19,9 @@ class Fonts:
 
     H3 = ("Georgia", 20, "bold")
 
+    # Backwards compatibility: some components expect Fonts.TITLE
+    TITLE = H3
+
     # ==================================================
     # Texto
     # ==================================================
@@ -28,6 +31,8 @@ class Fonts:
     BODY_BOLD = ("Segoe UI", 15, "bold")
 
     SMALL = ("Segoe UI", 13)
+
+    SMALL_BOLD = ("Segoe UI", 13, "bold")
 
     CAPTION = ("Segoe UI", 11)
 

@@ -1,233 +1,178 @@
-"""
-sidebar.py
-----------
-
-Barra lateral principal de la aplicación.
-"""
+"""Sidebar institucional, compacto y colapsable."""
 
 from __future__ import annotations
 
 import customtkinter as ctk
 
-from components.navigation.sidebar_button import SidebarButton
-
+from components.layout.sidebar_menu import SidebarMenu
+from components.layout.sidebar_profile import SidebarProfile
+from components.buttons.logout_button import LogoutButton
 from config.colors import Colors
-from config.fonts import Fonts
-from config.navigation import MAIN_MENU
 from config.settings import Settings
-
+from config.sizes import Sizes
 from utils.image_loader import ImageLoader
 
 
 class Sidebar(ctk.CTkFrame):
+    EXPANDED_WIDTH = Sizes.SIDEBAR_WIDTH
+    COLLAPSED_WIDTH = Sizes.SIDEBAR_COLLAPSED_WIDTH
 
-    def __init__(
-        self,
-        master,
-        width=260,
-        command=None
-    ):
-
+    def __init__(self, master, width=EXPANDED_WIDTH, command=None):
         super().__init__(
             master,
             width=width,
-            fg_color=Colors.SIDEBAR,
-            corner_radius=0
+            fg_color=Colors.PRIMARY,
+            corner_radius=0,
         )
 
         self.command = command
+        self.expanded = True
+        self.current_role = "Administrador"
+        self.logo = None
 
-        self.buttons = {}
-
+        self.grid_propagate(False)
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
         self._build()
 
-    # =====================================================
-    # CONSTRUCCIÓN
-    # =====================================================
-
-    def _build(self):
-
-        self._build_header()
-
+    def _build(self) -> None:
+        self._build_brand()
         self._build_menu()
-
         self._build_footer()
 
-    # =====================================================
-    # HEADER
-    # =====================================================
+    def _build_brand(self) -> None:
+        self.brand = ctk.CTkFrame(self, height=97, fg_color="transparent")
+        self.brand.grid(row=0, column=0, sticky="ew")
+        self.brand.grid_propagate(False)
+        self.brand.grid_columnconfigure(1, weight=1)
 
-    def _build_header(self):
+        logo_badge = ctk.CTkFrame(
+            self.brand,
+            width=44,
+            height=44,
+            fg_color=Colors.TRANSPARENT,
+            corner_radius=0,
+        )
+        logo_badge.grid(row=0, column=0, rowspan=2, padx=(20, 11), pady=(18, 16))
+        logo_badge.grid_propagate(False)
 
-        frame = ctk.CTkFrame(
-            self,
-            fg_color="transparent"
+        self.logo = ImageLoader.load(Settings.APP_LOGO, (27, 31))
+        ctk.CTkLabel(logo_badge, text="", image=self.logo).place(
+            relx=0.5, rely=0.5, anchor="center"
         )
 
-        frame.grid(
-            row=0,
-            column=0,
-            sticky="ew",
-            pady=(25, 20),
-            padx=15
-        )
-
-        logo = ImageLoader.load(
-            Settings.LOGO_PATH,
-            (90, 90)
-        )
-
-        lbl_logo = ctk.CTkLabel(
-            frame,
-            image=logo,
-            text=""
-        )
-
-        lbl_logo.pack(pady=(0, 12))
-
-        lbl_title = ctk.CTkLabel(
-            frame,
-            text="Monitorías y\nTutorías Académicas",
-            font=Fonts.H3,
-            justify="center",
-            text_color=Colors.WHITE
-        )
-
-        lbl_title.pack()
-
-    # =====================================================
-    # MENÚ
-    # =====================================================
-
-    def _build_menu(self):
-
-        frame = ctk.CTkScrollableFrame(
-            self,
-            fg_color="transparent"
-        )
-
-        frame.grid(
-            row=1,
-            column=0,
-            sticky="nsew",
-            padx=10
-        )
-
-        for item in MAIN_MENU:
-
-            icon = ImageLoader.load(
-                f"{Settings.ICONS_PATH}{item.icon}",
-                Settings.ICON_SIZE
-            )
-
-            button = SidebarButton(
-                frame,
-                text=item.title,
-                icon=icon,
-                command=lambda i=item: self._on_selected(i.id)
-            )
-
-            button.pack(
-                fill="x",
-                pady=4
-            )
-
-            self.buttons[item.id] = button
-
-    # =====================================================
-    # FOOTER
-    # =====================================================
-
-    def _build_footer(self):
-
-        frame = ctk.CTkFrame(
-            self,
-            fg_color="transparent"
-        )
-
-        frame.grid(
-            row=2,
-            column=0,
-            sticky="ew",
-            padx=15,
-            pady=15
-        )
-
-        self.user_label = ctk.CTkLabel(
-            frame,
-            text="Invitado",
-            font=Fonts.BODY_BOLD,
-            text_color=Colors.WHITE
-        )
-
-        self.user_label.pack(
-            anchor="w"
-        )
-
-        self.role_label = ctk.CTkLabel(
-            frame,
-            text="Sin iniciar sesión",
-            font=Fonts.SMALL,
-            text_color=Colors.LIGHT
-        )
-
-        self.role_label.pack(
+        self.brand_name = ctk.CTkLabel(
+            self.brand,
+            text="UNITRÓPICO",
+            font=("Segoe UI", 9, "bold"),
+            text_color=Colors.SECONDARY,
             anchor="w",
-            pady=(0, 12)
         )
+        self.brand_name.grid(row=0, column=1, sticky="sw", pady=(21, 0))
 
-        logout = ctk.CTkButton(
-            frame,
-            text="Cerrar sesión",
-            fg_color="transparent",
-            hover_color=Colors.SIDEBAR_HOVER,
+        self.system_name = ctk.CTkLabel(
+            self.brand,
+            text="Monitorías y Tutorías",
+            font=("Segoe UI", 12, "bold"),
+            text_color=Colors.TEXT_WHITE,
             anchor="w",
-            command=self._logout
+        )
+        self.system_name.grid(row=1, column=1, sticky="nw", pady=(0, 17))
+
+        ctk.CTkFrame(self.brand, height=1, fg_color=Colors.PRIMARY_LIGHT).grid(
+            row=2, column=0, columnspan=2, sticky="ew", padx=12
         )
 
-        logout.pack(
-            fill="x"
+    def _build_menu(self) -> None:
+        self.menu = SidebarMenu(
+            self,
+            role=self.current_role,
+            callback=self._on_selected,
+        )
+        self.menu.grid(row=1, column=0, sticky="nsew", padx=20, pady=(20, 12))
+
+    def _build_footer(self) -> None:
+        self.footer = ctk.CTkFrame(self, fg_color="transparent")
+        self.footer.grid(row=2, column=0, sticky="ew")
+
+        # Separador superior
+        ctk.CTkFrame(self.footer, height=1, fg_color=Colors.PRIMARY_LIGHT).pack(
+            fill="x", padx=0
         )
 
-    # =====================================================
-    # EVENTOS
-    # =====================================================
+        # Perfil de usuario
+        self.profile = SidebarProfile(self.footer)
+        self.profile.pack(fill="x", padx=20, pady=(12, 8))
 
-    def _on_selected(
-        self,
-        option: str
-    ):
+        # Botón de cerrar sesión en la parte inferior del sidebar
+        ctk.CTkFrame(
+            self.footer,
+            height=1,
+            fg_color=Colors.PRIMARY_LIGHT
+        ).pack(
+            fill="x",
+            padx=20,
+            pady=(0,12)
+        )
 
-        for button in self.buttons.values():
-            button.set_inactive()
+        LogoutButton(
 
-        self.buttons[option].set_active()
+            self.footer,
 
-        if self.command:
+            command=lambda: self.command("logout")
+
+        ).pack(
+
+            fill="x",
+
+            padx=20,
+
+            pady=(0,18)
+
+        )
+
+    def _on_selected(self, option: str) -> None:
+        if self.command is not None:
             self.command(option)
 
-    def _logout(self):
+    def set_user(self, name: str, role: str) -> None:
+        self.current_role = role
+        self.profile.set_user(name, role)
+        self.menu.load(role)
 
-        if self.command:
-            self.command("logout")
+    def expand(self) -> None:
+        if self.expanded:
+            return
 
-    # =====================================================
-    # API
-    # =====================================================
+        self.expanded = True
+        self.configure(width=self.EXPANDED_WIDTH)
+        self.menu.grid_configure(padx=20)
+        self.brand_name.grid()
+        self.system_name.grid()
+        self.profile.expand()
+        self.menu.expand()
 
-    def set_user(
-        self,
-        name: str,
-        role: str
-    ):
+    def collapse(self) -> None:
+        if not self.expanded:
+            return
 
-        self.user_label.configure(
-            text=name
-        )
+        self.expanded = False
+        self.configure(width=self.COLLAPSED_WIDTH)
+        self.menu.grid_configure(padx=14)
+        self.brand_name.grid_remove()
+        self.system_name.grid_remove()
+        self.profile.collapse()
+        self.menu.collapse()
 
-        self.role_label.configure(
-            text=role
-        )
+    def toggle(self) -> None:
+        if self.expanded:
+            self.collapse()
+        else:
+            self.expand()
+
+    def get_current_role(self) -> str:
+        return self.current_role
+
+    def get_current_option(self):
+        return self.menu.current_option

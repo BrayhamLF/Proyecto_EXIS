@@ -13,7 +13,7 @@ class LogoManager:
     def shield(size):
 
         return ImageLoader.load(
-            AssetManager.logo("shield.png"),
+            AssetManager.logo("escudo-unitropico_2.png"),
             size
         )
 
@@ -21,7 +21,7 @@ class LogoManager:
     def horizontal(size):
 
         return ImageLoader.load(
-            AssetManager.logo("horizontal.png"),
+            AssetManager.logo("logo-unitropico-02.png"),
             size
         )
 
@@ -29,6 +29,6 @@ class LogoManager:
     def white(size):
 
         return ImageLoader.load(
-            AssetManager.logo("white.png"),
+            AssetManager.logo("logo-simbolo-unitropico-2.png"),
             size
         )

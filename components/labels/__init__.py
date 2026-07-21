@@ -1,1 +1,1 @@
-
+"""Etiquetas tipográficas reutilizables."""

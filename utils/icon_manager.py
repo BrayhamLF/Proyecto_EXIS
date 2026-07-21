@@ -12,7 +12,5 @@ class IconManager:
     @staticmethod
     def load(name: str, size=(22, 22)):
 
-        return ImageLoader.load(
-            AssetManager.icon(f"{name}.png"),
-            size
-        )
+        filename = name if name.endswith(".svg") else f"{name}.svg"
+        return ImageLoader.load(AssetManager.icon(filename), size)

@@ -1,0 +1,1 @@
+"""Secciones compuestas del dashboard."""

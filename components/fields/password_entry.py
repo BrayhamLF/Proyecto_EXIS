@@ -2,7 +2,7 @@
 password_entry.py
 -----------------
 
-Campo especializado para contraseña.
+Campo especializado para contraseñas.
 """
 
 from __future__ import annotations
@@ -34,14 +34,12 @@ class PasswordEntry(LineEntry):
         self._visible = False
 
         # --------------------------------------------------
-        # Reorganizar el grid para colocar el botón
-        # dentro del mismo renglón del Entry.
+        # Reorganizar Grid
         # --------------------------------------------------
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
 
-        # El Entry solo ocupa la primera columna
         self.entry.grid_forget()
 
         self.entry.grid(
@@ -51,40 +49,69 @@ class PasswordEntry(LineEntry):
         )
 
         # --------------------------------------------------
-        # Botón mostrar/ocultar
+        # Botón Mostrar / Ocultar
         # --------------------------------------------------
 
         self.toggle_button = ctk.CTkButton(
+
             self,
+
             text="Mostrar",
-            width=75,
+
+            width=80,
+
             height=34,
+
             fg_color="transparent",
+
             hover_color=Colors.SURFACE_ALT,
+
             text_color=Colors.PRIMARY,
+
             border_width=0,
+
             corner_radius=8,
+
             font=Fonts.SMALL,
+
             command=self.toggle_password
+
         )
 
         self.toggle_button.grid(
+
             row=1,
+
             column=1,
+
             padx=(8, 0)
+
         )
 
     # ==================================================
-    # Mostrar / Ocultar contraseña
+    # Mostrar / Ocultar
     # ==================================================
 
     def toggle_password(self):
 
-        self._visible = not self._visible
+        self.set_visible(
+            not self._visible
+        )
 
-        if self._visible:
+    # --------------------------------------------------
 
-            self.entry.configure(show="")
+    def set_visible(
+        self,
+        visible: bool
+    ):
+
+        self._visible = visible
+
+        if visible:
+
+            self.entry.configure(
+                show=""
+            )
 
             self.toggle_button.configure(
                 text="Ocultar"
@@ -92,7 +119,9 @@ class PasswordEntry(LineEntry):
 
         else:
 
-            self.entry.configure(show="●")
+            self.entry.configure(
+                show="●"
+            )
 
             self.toggle_button.configure(
                 text="Mostrar"
@@ -105,3 +134,69 @@ class PasswordEntry(LineEntry):
     def is_visible(self) -> bool:
 
         return self._visible
+
+    # --------------------------------------------------
+
+    def clear(self):
+
+        self.entry.delete(
+            0,
+            "end"
+        )
+
+    # --------------------------------------------------
+
+    def set(
+        self,
+        value: str
+    ):
+
+        self.clear()
+
+        self.entry.insert(
+            0,
+            value
+        )
+
+    # --------------------------------------------------
+
+    def focus(self):
+
+        self.entry.focus_set()
+
+    # --------------------------------------------------
+
+    def validate(self) -> bool:
+
+        return bool(
+            self.get().strip()
+        )
+
+    # --------------------------------------------------
+
+    def set_readonly(
+        self,
+        readonly=True
+    ):
+
+        self.entry.configure(
+
+            state="readonly" if readonly else "normal"
+
+        )
+
+    # --------------------------------------------------
+
+    def enable(self):
+
+        self.entry.configure(
+            state="normal"
+        )
+
+    # --------------------------------------------------
+
+    def disable(self):
+
+        self.entry.configure(
+            state="disabled"
+        )

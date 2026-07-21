@@ -1,0 +1,1 @@
+"""Separadores visuales reutilizables."""
